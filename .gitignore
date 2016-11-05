@@ -1,3 +1,11 @@
+# Created by https://www.gitignore.io/api/ipythonnotebook,julia
+
+### IPythonNotebook ###
+# Temporary data
+.ipynb_checkpoints/
+
+
+### Julia ###
 *.jl.cov
 *.jl.*.cov
 *.jl.mem
