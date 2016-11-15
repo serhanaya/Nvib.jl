@@ -1,8 +1,3 @@
-## Finding Roots.
-#
-#
-#
-
 """ find_all_roots(f::Function; step_size=0.5, start=0, finish=10e10, tol=1e-6, max_iter=10000, root_num_max=5)
 
 Find all roots of a given function in a given range using Bisection method.
@@ -151,7 +146,7 @@ function freqTab(atype::Beam; min_lambda=10, max_lambda=150, no_lambda=10, min_r
             end
         end
     end
-    
+
     return result
 
 end  # end of function tab.

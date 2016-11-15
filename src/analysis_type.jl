@@ -61,7 +61,7 @@ end
 
 """ OPBeam(;effct=:N_ALL, bcond=:CC, bcurv=:CONST, elnum= bcurv==:CONST ? 1 : 10,
             gamma=0.2, ro=2237e-9, nu=0.3, kb=1.2, el=1.06e3, eta=0.1, lam=100, phit=2pi/3, rad0=0.2)
-            
+
 Analysis type: Out-of-plane dynamic analysis of beams.
 
 Parameters
@@ -121,4 +121,4 @@ type OPBeam
 end
 
 
-typealias Beam Union{IPBeam, OPBeam}  # Beam type = IPBeam or OPBeam type.
+typealias Beam Union{IPBeam, OPBeam}  # Analysis type = IPBeam or OPBeam type.

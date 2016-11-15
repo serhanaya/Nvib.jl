@@ -323,7 +323,7 @@ end  # end of function fundamental(OPBeam).
 
 function beam_fundamental(atype::Beam, om::Number)
     elnum = atype.elnum
-    fundamatrix = []  # Her bir elemana ait asal matris bu vektörde bir araya gelecek.
+    fundamatrix = []  # This vector consists of the fundamental matrices of each elements.
     for i = 1:elnum
         push!(fundamatrix, element_fundamental(atype, i, om))
     end

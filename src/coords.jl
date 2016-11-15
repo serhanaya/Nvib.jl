@@ -16,11 +16,11 @@ function coords(atype::Beam, nodenum)
     elnum = atype.elnum
     phit = atype.phit
 
-    phia = 0
-    phib = phit
+    phia = -phit/2
+    phib = phit/2
     phiel = (phib - phia) / elnum
-    phix = zeros(elnum + 1)  # x no'lu elemanın koordinatı için vector initialization.
-                             # size = [toplam node sayısı]
+    phix = zeros(elnum + 1)  # vector initialization for coordinate of element x
+                             # size = [total number of nodes]
 
     phix[1] = phia  # Coordinate of nodenum=1 is phia rad.
     for i in 2:length(phix)
