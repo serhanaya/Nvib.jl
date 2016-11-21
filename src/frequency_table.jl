@@ -132,13 +132,11 @@ julia> analysis1 = IPBeam()
 julia> nondimfrq = freqTab(analysis1, min_lambda=150, max_lambda=150, no_lambda=1, min_rad0=0.2,
     max_rad0=0.2, no_rad0=1, min_phit=2pi/3, max_phit=2pi/3, no_phit=1, min_step=0,
     max_step=10e10, size_step=2, tolerance=1e-6, iter_max=10000, no_of_roots=2)
-julia> nondimfrq[1, 1, 1, 2]  # gives an array consist of the first and second mode nondim-frequencies
+julia> nondimfrq[1, 1, 1, :]  # gives an array consist of the first and second mode nondim-frequencies
 """
 function freqTab(atype::Beam; min_lambda=10, max_lambda=150, no_lambda=10, min_rad0=0.2,
     max_rad0=2, no_rad0=10, min_phit=pi/18, max_phit=5pi/6, no_phit=10, min_step=0,
     max_step=10e10, size_step=10, tolerance=1e-6, iter_max=10000, no_of_roots=5, warn=false)
-
-    start_time = time()
 
     l = linspace(min_lambda, max_lambda, no_lambda)
     r = linspace(min_rad0, max_rad0, no_rad0)
@@ -151,7 +149,7 @@ function freqTab(atype::Beam; min_lambda=10, max_lambda=150, no_lambda=10, min_r
     result = zeros(no_lambda, no_rad0, no_phit, no_of_roots)
     n = length(l) * length(r) * length(p) * length(rootfunc(detfunc))
     pr = Progress(n, 1)
-
+    
     for (i, lam) in enumerate(l)
         atype.lam = lam
         for (j, rad0) in enumerate(r)
@@ -161,7 +159,9 @@ function freqTab(atype::Beam; min_lambda=10, max_lambda=150, no_lambda=10, min_r
                 for (m, root) in enumerate(rootfunc(detfunc))
                     h = sqrt(12) * rad0 * phit/lam  # h : height = variable
                     b = h * 2/3  # b : width = constant
-                    c = root * (rad0 * phit)^2 * sqrt(atype.ro * b * h / (atype.el * b * h^3 / 12))
+                    area_moment(analysis_type::IPBeam) = b * h^3 / 12
+                    area_moment(analysis_type::OPBeam) = h * b^3 / 12
+                    c = root * (rad0 * phit)^2 * sqrt(atype.ro * b * h / (atype.el * area_moment(atype)))
                     result[i, j, k, m] = c  # result[i,j,k,m] is the nondimensional frequency
                     next!(pr)
                 end
