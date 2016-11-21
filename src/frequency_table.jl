@@ -1,4 +1,4 @@
-""" find_all_roots(f::Function; step_size=0.5, start=0, finish=10e10, tol=1e-6, max_iter=10000, root_num_max=5)
+""" find_all_roots(f::Function; step_size=0.5, start=0, finish=10e10, tol=1e-6, max_iter=10000, root_num_max=5, warn=true)
 
 Find all roots of a given function in a given range using Bisection method.
 
@@ -29,7 +29,7 @@ plot(x, f(x))
 hlines(y=0, xmin=-2pi, xmax=2pi)
 scatter(r_arr, f(r_arr))
 """
-function find_all_roots(f::Function; step_size=0.5, start=0, finish=10e10, tol=1e-6, max_iter=10000, root_num_max=5
+function find_all_roots(f::Function; step_size=0.5, start=0, finish=10e10, tol=1e-6, max_iter=10000, root_num_max=5,
                         warn=true)
 
   roots = zeros(root_num_max)
@@ -109,7 +109,7 @@ size_step           : Step size for searching roots (see find_all_roots - step).
 tolerance           : (see find_all_roots - tol)
 iter_max            : (see find_all_roots - max_iter)
 no_of_roots         : How many roots are required? (see find_all_roots - root_num_max)
-warn                : 
+warn                : Warning for maximum iteration while root searching.
 
 Returns
 -------
