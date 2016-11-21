@@ -1,6 +1,6 @@
 """ detrmt(atype::Beam, om::Number)
 
-Calculate determinant of A of size [number of elements, 6, 6]
+Calculate determinant of A of size [6 * number of elements, 6 * number of elements]
 """
 function detrmt(atype::Beam, om::Number)
 
