@@ -11,6 +11,7 @@ finish        : End value (End of the interval)
 tol           : Tolerance (stop criteria_1 for this function)
 max_iter      : Maximum allowed iteration (stop criteria_2 for this function)
 root_num_max  : How many roots to find in a given interval.
+warn          : Warns when the maximum iteration is reached.
 
 Returns
 -------
@@ -28,7 +29,8 @@ plot(x, f(x))
 hlines(y=0, xmin=-2pi, xmax=2pi)
 scatter(r_arr, f(r_arr))
 """
-function find_all_roots(f::Function; step_size=0.5, start=0, finish=10e10, tol=1e-6, max_iter=10000, root_num_max=5)
+function find_all_roots(f::Function; step_size=0.5, start=0, finish=10e10, tol=1e-6, max_iter=10000, root_num_max=5
+                        warn=true)
 
   roots = zeros(root_num_max)
 
@@ -70,7 +72,7 @@ function find_all_roots(f::Function; step_size=0.5, start=0, finish=10e10, tol=1
       end
     end
 
-    if (niter == max_iter && interval > tol)
+    if (warn == true && (niter == max_iter && interval > tol))
       println("""Bisection stopped without converging
                  to the desired tolerance because the
                  maximum number of iterations was reached.""")
@@ -83,9 +85,9 @@ function find_all_roots(f::Function; step_size=0.5, start=0, finish=10e10, tol=1
   return roots
 end  # end of function find_all_roots.
 
-""" tab(atype::Beam; min_lambda=10, max_lambda=150, no_lambda=10, min_rad0=0.2,
+""" freqTab(atype::Beam; min_lambda=10, max_lambda=150, no_lambda=10, min_rad0=0.2,
     max_rad0=2, no_rad0=10, min_phit=pi/18, max_phit=5pi/6, no_phit=10, min_step=0,
-    max_step=10e10, size_step=10, tolerance=1e-6, iter_max=10000, no_of_roots=5)
+    max_step=10e10, size_step=10, tolerance=1e-6, iter_max=10000, no_of_roots=5, warn=false)
 
 A parametric approach for root finding. Use find_all_roots method and return
 a table containing mode frequencies for a given analysis type.
@@ -107,15 +109,34 @@ size_step           : Step size for searching roots (see find_all_roots - step).
 tolerance           : (see find_all_roots - tol)
 iter_max            : (see find_all_roots - max_iter)
 no_of_roots         : How many roots are required? (see find_all_roots - root_num_max)
+warn                : 
 
 Returns
 -------
-result              :
+result              : result[i,j,k,m] is the nondimensional frequency. Here, i stands for the
+                      slenderness ratio, j is the radius which determines the ratio R/γ (the 
+                      small scale parameter), k is the value of the opening angle of the beam,
+                      and lastly, m is the mode number.
 
+Example
+-------
+This function is created for a parametric analysis in mind, however we can calculate nondimensional
+frequencies for specific conditions:
+
+If we want to determine the nondimensional frequency for the first and second mode of a nonlocal 
+beam (in-plane vibration analysis) having slenderness ratio of Λ=150, θT=120 and R/γ=0.2 where 
+γ=1.56 nm we will follow the given steps:
+
+julia> Pkg.clone("git@github.com:serhanaya/Nvib.jl")
+julia> analysis1 = IPBeam()
+julia> nondimfrq = freqTab(analysis1, min_lambda=150, max_lambda=150, no_lambda=1, min_rad0=0.2,
+    max_rad0=0.2, no_rad0=1, min_phit=2pi/3, max_phit=2pi/3, no_phit=1, min_step=0,
+    max_step=10e10, size_step=2, tolerance=1e-6, iter_max=10000, no_of_roots=2)
+julia> nondimfrq[1, 1, 1, 2]  # gives an array consist of the first and second mode nondim-frequencies
 """
 function freqTab(atype::Beam; min_lambda=10, max_lambda=150, no_lambda=10, min_rad0=0.2,
     max_rad0=2, no_rad0=10, min_phit=pi/18, max_phit=5pi/6, no_phit=10, min_step=0,
-    max_step=10e10, size_step=10, tolerance=1e-6, iter_max=10000, no_of_roots=5)
+    max_step=10e10, size_step=10, tolerance=1e-6, iter_max=10000, no_of_roots=5, warn=false)
 
     start_time = time()
 
@@ -125,7 +146,8 @@ function freqTab(atype::Beam; min_lambda=10, max_lambda=150, no_lambda=10, min_r
 
     detfunc(om) = detrmt(atype, om)
     rootfunc(f::Function) = find_all_roots(f, step_size=size_step, start=min_step, finish=max_step,
-                                           tol=tolerance, max_iter=iter_max, root_num_max = no_of_roots)
+                                           tol=tolerance, max_iter=iter_max, root_num_max = no_of_roots, 
+                                           warn=warn)
     result = zeros(no_lambda, no_rad0, no_phit, no_of_roots)
     n = length(l) * length(r) * length(p) * length(rootfunc(detfunc))
     pr = Progress(n, 1)
@@ -140,7 +162,7 @@ function freqTab(atype::Beam; min_lambda=10, max_lambda=150, no_lambda=10, min_r
                     h = sqrt(12) * rad0 * phit/lam  # h : height = variable
                     b = h * 2/3  # b : width = constant
                     c = root * (rad0 * phit)^2 * sqrt(atype.ro * b * h / (atype.el * b * h^3 / 12))
-                    result[i, j, k, m] = c  # sonuc: boyutsuz frekans elde edildi.
+                    result[i, j, k, m] = c  # result[i,j,k,m] is the nondimensional frequency
                     next!(pr)
                 end
             end
@@ -149,4 +171,4 @@ function freqTab(atype::Beam; min_lambda=10, max_lambda=150, no_lambda=10, min_r
 
     return result
 
-end  # end of function tab.
+end  # end of function freqTab.
