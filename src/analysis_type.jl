@@ -1,5 +1,5 @@
-""" IPBeam(;effct=:N_ALL, bcond=:CC, bcurv=:CONST, gamma=0.2, elnum= bcurv==:CONST ? 1 : 10,
-            ro=2237e-9, kn=1.2, nu=0.3, el=1.06e3, eta=0.1, lam=100, phit=2pi/3, rad0=0.2)
+""" IPBeam(;effct=:N_ALL, bcond=:CC, bcurv=:CONST, gamma=0.2, elnum=1, ro=2237e-9, kn=1.2, 
+      nu=0.3, el=1.06e3, eta=0.1, lam=100, phit=2pi/3, rad0=0.2)
 
 Analysis type: In-plane dynamic analysis of beams.
 
@@ -50,17 +50,15 @@ type IPBeam
     phit::Float64
     rad0::Float64
 
-  function IPBeam(;effct=:N_ALL, bcond=:CC, bcurv=:CONST, gamma=0.2, elnum= bcurv==:CONST ? 1 : 10,
+  function IPBeam(;effct=:N_ALL, bcond=:CC, bcurv=:CONST, gamma=0.2, elnum=1,
     ro=2237e-9, kn=1.2, nu=0.3, el=1.06e3, eta=0.1, lam=100, phit=2pi/3, rad0=0.2)
 
-        new(effct, bcond, bcurv, gamma, elnum, ro, kn, nu, el, eta, lam, phit, rad0)
-
+      new(effct, bcond, bcurv, gamma, elnum, ro, kn, nu, el, eta, lam, phit, rad0)
   end
-
 end
 
-""" OPBeam(;effct=:N_ALL, bcond=:CC, bcurv=:CONST, elnum= bcurv==:CONST ? 1 : 10,
-            gamma=0.2, ro=2237e-9, nu=0.3, kb=1.2, el=1.06e3, eta=0.1, lam=100, phit=2pi/3, rad0=0.2)
+""" OPBeam(;effct=:N_ALL, bcond=:CC, bcurv=:CONST, elnum=1, gamma=0.2, ro=2237e-9, nu=0.3, kb=1.2, 
+      el=1.06e3, eta=0.1, lam=100, phit=2pi/3, rad0=0.2)
 
 Analysis type: Out-of-plane dynamic analysis of beams.
 
@@ -111,14 +109,11 @@ type OPBeam
     phit::Float64
     rad0::Float64
 
-  function OPBeam(;effct=:N_ALL, bcond=:CC, bcurv=:CONST, elnum= bcurv==:CONST ? 1 : 10,
-    gamma=0.2, ro=2237e-9, nu=0.3, kb=1.2, el=1.06e3, eta=0.1, lam=100, phit=2pi/3, rad0=0.2)
+  function OPBeam(;effct=:N_ALL, bcond=:CC, bcurv=:CONST, elnum=1, gamma=0.2, ro=2237e-9, 
+            nu=0.3, kb=1.2, el=1.06e3, eta=0.1, lam=100, phit=2pi/3, rad0=0.2)
 
-    new(effct, bcond, bcurv, elnum, gamma, ro, nu, kb, el, eta, lam, phit, rad0)
-
+      new(effct, bcond, bcurv, elnum, gamma, ro, nu, kb, el, eta, lam, phit, rad0)
   end
-
 end
-
 
 typealias Beam Union{IPBeam, OPBeam}  # Analysis type = IPBeam or OPBeam type.
