@@ -9,22 +9,22 @@ Parameters
 
 Returns
 -------
-::Float64   phi     : Coordinate in radians.
+::Float64   theta   : Coordinate in radians.
 """
 function coords(atype::Beam, nodenum)
 
     elnum = atype.elnum
-    phit = atype.phit
+    thetat = atype.thetat
 
-    phia = -phit/2
-    phib = phit/2
-    phiel = (phib - phia) / elnum
-    phix = zeros(elnum + 1)  # vector initialization for coordinate of element x
+    thetaa = -thetat/2
+    thetab = thetat/2
+    thetael = (thetab - thetaa) / elnum
+    thetax = zeros(elnum + 1)  # vector initialization for coordinate of element x
                              # size = [total number of nodes]
 
-    phix[1] = phia  # Coordinate of nodenum=1 is phia rad.
-    for i in 2:length(phix)
-        phix[i] = phia + (i-1) * phiel
+    thetax[1] = thetaa  # Coordinate of nodenum=1 is thetaa rad.
+    for i in 2:length(thetax)
+        thetax[i] = thetaa + (i-1) * thetael
     end
-    return phix[nodenum]
+    return thetax[nodenum]
 end  # end of function coords.

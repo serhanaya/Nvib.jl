@@ -16,7 +16,7 @@ function element_fundamental(atype::IPBeam, element_no::Int64, om::Number)
 
     effct = atype.effct
     bcurv = atype.bcurv
-    phit = atype.phit
+    thetat = atype.thetat
     rad0 = atype.rad0
     lam = atype.lam
     gam = atype.gamma
@@ -27,12 +27,12 @@ function element_fundamental(atype::IPBeam, element_no::Int64, om::Number)
     nu = atype.nu
 
 
-    h0 = sqrt(12) * rad0 * phit / lam  # Height_init for cross-section (to be used in height(phi) function)
+    h0 = sqrt(12) * rad0 * thetat / lam  # Height_init for cross-section (to be used in height(θ) function)
     b = h0 * 2/3  # Width of the cross-section (constant)
     shear = el / (2*(1+nu))  # Shear modulus
 
-    radius(phi) = bcurv == :CONST ? rad0 : rad0 / (cos(phi))^3  # Gives radius for given angle.
-    height(phi) = phi <= 0 ? h0 * (1 - eta * phi/phit) : h0 * (1 + eta * phi/phit);
+    radius(θ) = bcurv == :CONST ? rad0 : rad0 / (cos(θ))^3  # Gives radius for given angle.
+    height(θ) = θ <= 0 ? h0 * (1 - eta * θ/thetat) : h0 * (1 + eta * θ/thetat);
     # Gives height of the cross-section for given angle.
 
     amat = zeros(6, 6);  # Fundamental matrix initialized.
@@ -177,7 +177,7 @@ function element_fundamental(atype::OPBeam, element_no::Int64, om::Number)
 
     effct = atype.effct
     bcurv = atype.bcurv
-    phit = atype.phit
+    thetat = atype.thetat
     rad0 = atype.rad0
     lam = atype.lam
     gam = atype.gamma
@@ -187,12 +187,12 @@ function element_fundamental(atype::OPBeam, element_no::Int64, om::Number)
     el = atype.el
     nu = atype.nu
 
-    h0 = sqrt(12) * rad0 * phit / lam  # Height of cross-section
+    h0 = sqrt(12) * rad0 * thetat / lam  # Height of cross-section
     b = h0 * 2/3  # Width of the cross_section
     shear = el / (2*(1+nu))  # Shear modulus
 
-    radius(phi) = bcurv == :CONST ? rad0 : rad0 / (cos(phi))^3  # Gives radius for given angle.
-    height(phi) = phi <= 0 ? h0 * (1 - eta * phi / phit) : h0 * (1 + eta * phi / phit);  # Gives height of cross-section
+    radius(θ) = bcurv == :CONST ? rad0 : rad0 / (cos(θ))^3  # Gives radius for given angle.
+    height(θ) = θ <= 0 ? h0 * (1 - eta * θ / thetat) : h0 * (1 + eta * θ / thetat);  # Gives height of cross-section
                                                                                          # for given angle.
 
     amat = zeros(6, 6);  # Fundamental matrix initialized.

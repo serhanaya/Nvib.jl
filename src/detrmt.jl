@@ -8,7 +8,7 @@ function detrmt(atype::Beam, om::Number)
     bcond = atype.bcond
     rad0 = atype.rad0
     lam = atype.lam
-    phit = atype.phit
+    thetat = atype.thetat
 
     rowdim = 6 * elnum
     coldim = 6 * elnum
