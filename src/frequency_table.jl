@@ -11,7 +11,7 @@ finish        : End value (End of the interval)
 tol           : Tolerance (stop criteria_1 for this function)
 max_iter      : Maximum allowed iteration (stop criteria_2 for this function)
 root_num_max  : How many roots to find in a given interval.
-warn          : Warns when the maximum iteration is reached.
+wrn           : Warns when the maximum iteration is reached.
 
 Returns
 -------
@@ -30,7 +30,7 @@ hlines(y=0, xmin=-2pi, xmax=2pi)
 scatter(r_arr, f(r_arr))
 """
 function find_all_roots(f::Function; step_size=0.5, start=0, finish=10e10, tol=1e-6, max_iter=10000, root_num_max=5,
-                        warn=true)
+                        wrn=true)
 
   roots = zeros(root_num_max)
 
@@ -72,7 +72,7 @@ function find_all_roots(f::Function; step_size=0.5, start=0, finish=10e10, tol=1
       end
     end
 
-    if (warn == true && (niter == max_iter && interval > tol))
+    if (wrn == true && (niter == max_iter && interval > tol))
       println("""Bisection stopped without converging
                  to the desired tolerance because the
                  maximum number of iterations was reached.""")
@@ -86,8 +86,8 @@ function find_all_roots(f::Function; step_size=0.5, start=0, finish=10e10, tol=1
 end  # end of function find_all_roots.
 
 """ freqTab(atype::Beam; min_lambda=10, max_lambda=150, no_lambda=10, min_rad0=0.2,
-    max_rad0=2, no_rad0=10, min_phit=pi/18, max_phit=5pi/6, no_phit=10, min_step=0,
-    max_step=10e10, size_step=10, tolerance=1e-6, iter_max=10000, no_of_roots=5, warn=false)
+    max_rad0=2, no_rad0=10, min_thetat=pi/18, max_thetat=5pi/6, no_thetat=10, min_step=0,
+    max_step=10e10, size_step=10, tolerance=1e-6, iter_max=10000, no_of_roots=5, wrn=false)
 
 A parametric approach for root finding. Use find_all_roots method and return
 a table containing mode frequencies for a given analysis type.
@@ -100,16 +100,16 @@ no_lambda           : This determines the step size (s_size=(max_l-min_l)/no_lam
 min_rad0            : Minimum value for initial radius R0.
 max_rad0            : Maximum value for initial radius R0.
 no_rad0             : This determines the step size (s_size=(max_r0-min_r0)/no_rad0).
-min_phit            : Minimum value for opening angle.
-max_phit            : Maximum value for angle.
-no_phit             : This determines the step size (s_size=(max_p-min_p)/no_phit).
+min_thetat          : Minimum value for opening angle.
+max_thetat          : Maximum value for angle.
+no_thetat           : This determines the step size (s_size=(max_p-min_p)/no_thetat).
 min_step            : Start point for searching roots (see find_all_roots - start).
 max_step            : End point for searching roots (see find_all_roots - finish).
 size_step           : Step size for searching roots (see find_all_roots - step).
 tolerance           : (see find_all_roots - tol)
 iter_max            : (see find_all_roots - max_iter)
 no_of_roots         : How many roots are required? (see find_all_roots - root_num_max)
-warn                : Warning for maximum iteration while root searching.
+wrn                 : Warning for maximum iteration while root searching.
 
 Returns
 -------
@@ -130,23 +130,23 @@ beam (in-plane vibration analysis) having slenderness ratio of Λ=150, θT=120 a
 julia> Pkg.clone("git@github.com:serhanaya/Nvib.jl")
 julia> analysis1 = IPBeam()
 julia> nondimfrq = freqTab(analysis1, min_lambda=150, max_lambda=150, no_lambda=1, min_rad0=0.2,
-    max_rad0=0.2, no_rad0=1, min_phit=2pi/3, max_phit=2pi/3, no_phit=1, min_step=0,
+    max_rad0=0.2, no_rad0=1, min_thetat=2pi/3, max_thetat=2pi/3, no_thetat=1, min_step=0,
     max_step=10e10, size_step=2, tolerance=1e-6, iter_max=10000, no_of_roots=2)
 julia> nondimfrq[1, 1, 1, :]  # gives an array consist of the first and second mode nondim-frequencies
 """
 function freqTab(atype::Beam; min_lambda=10, max_lambda=150, no_lambda=10, min_rad0=0.2,
-    max_rad0=2, no_rad0=10, min_phit=pi/18, max_phit=5pi/6, no_phit=10, min_step=0,
-    max_step=10e10, size_step=10, tolerance=1e-6, iter_max=10000, no_of_roots=5, warn=false)
+    max_rad0=2, no_rad0=10, min_thetat=pi/18, max_thetat=5pi/6, no_thetat=10, min_step=0,
+    max_step=10e10, size_step=10, tolerance=1e-6, iter_max=10000, no_of_roots=5, wrn=false)
 
     l = linspace(min_lambda, max_lambda, no_lambda)
     r = linspace(min_rad0, max_rad0, no_rad0)
-    p = linspace(min_phit, max_phit, no_phit)
+    p = linspace(min_thetat, max_thetat, no_thetat)
 
     detfunc(om) = detrmt(atype, om)
     rootfunc(f::Function) = find_all_roots(f, step_size=size_step, start=min_step, finish=max_step,
                                            tol=tolerance, max_iter=iter_max, root_num_max = no_of_roots, 
-                                           warn=warn)
-    result = zeros(no_lambda, no_rad0, no_phit, no_of_roots)
+                                           wrn=wrn)
+    result = zeros(no_lambda, no_rad0, no_thetat, no_of_roots)
     n = length(l) * length(r) * length(p) * length(rootfunc(detfunc))
     pr = Progress(n, 1)
     
@@ -154,14 +154,14 @@ function freqTab(atype::Beam; min_lambda=10, max_lambda=150, no_lambda=10, min_r
         atype.lam = lam
         for (j, rad0) in enumerate(r)
             atype.rad0 = rad0
-            for (k, phit) in enumerate(p)
-                atype.phit = phit
+            for (k, thetat) in enumerate(p)
+                atype.thetat = thetat
                 for (m, root) in enumerate(rootfunc(detfunc))
-                    h = sqrt(12) * rad0 * phit/lam  # h : height = variable
+                    h = sqrt(12) * rad0 * thetat/lam  # h : height = variable
                     b = h * 2/3  # b : width = constant
                     area_moment(analysis_type::IPBeam) = b * h^3 / 12
                     area_moment(analysis_type::OPBeam) = h * b^3 / 12
-                    c = root * (rad0 * phit)^2 * sqrt(atype.ro * b * h / (atype.el * area_moment(atype)))
+                    c = root * (rad0 * thetat)^2 * sqrt(atype.ro * b * h / (atype.el * area_moment(atype)))
                     result[i, j, k, m] = c  # result[i,j,k,m] is the nondimensional frequency
                     next!(pr)
                 end
