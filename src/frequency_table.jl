@@ -114,7 +114,7 @@ wrn                 : Warning for maximum iteration while root searching.
 Returns
 -------
 result              : result[i,j,k,m] is the nondimensional frequency. Here, i stands for the
-                      slenderness ratio, j is the radius which determines the ratio R/γ (the 
+                      slenderness ratio, j is the radius which determines the ratio R/γ (the
                       small scale parameter), k is the value of the opening angle of the beam,
                       and lastly, m is the mode number.
 
@@ -123,19 +123,20 @@ Example
 This function is created for a parametric analysis in mind, however we can calculate nondimensional
 frequencies for specific conditions:
 
-If we want to determine the nondimensional frequency for the first and second mode of a nonlocal 
-beam (in-plane vibration analysis) having slenderness ratio of Λ=150, θT=120 and R/γ=0.2 where 
-γ=1.56 nm we will follow the given steps:
+If we want to determine the nondimensional frequency for the first and second mode of a nonlocal
+beam (in-plane vibration analysis) having slenderness ratio of Λ=150, opening angle θT=120 and small
+scale parameter R0/γ=1 where γ=1.56 nm we will follow the given steps:
 
 julia> Pkg.clone("git@github.com:serhanaya/Nvib.jl")
 julia> analysis1 = IPBeam()
-julia> nondimfrq = freqTab(analysis1, min_lambda=150, max_lambda=150, no_lambda=1, min_rad0=0.2,
-    max_rad0=0.2, no_rad0=1, min_thetat=2pi/3, max_thetat=2pi/3, no_thetat=1, min_step=0,
+julia> nondimfrq = freqTab(analysis1, min_lambda=150, max_lambda=150, no_lambda=1, min_rad0=1.56,
+    max_rad0=1.56, no_rad0=1, min_thetat=2pi/3, max_thetat=2pi/3, no_thetat=1, min_step=0,
     max_step=10e10, size_step=2, tolerance=1e-6, iter_max=10000, no_of_roots=2)
-julia> nondimfrq[1, 1, 1, :]  # gives an array consist of the first and second mode nondim-frequencies
+julia> nondimfrq[1, 1, 1, :]  # gives an array consist of the nondimensional frequencies for the
+first and second mode.
 """
-function freqTab(atype::Beam; min_lambda=10, max_lambda=150, no_lambda=10, min_rad0=0.2,
-    max_rad0=2, no_rad0=10, min_thetat=pi/18, max_thetat=5pi/6, no_thetat=10, min_step=0,
+function freqTab(atype::Beam; min_lambda=10, max_lambda=150, no_lambda=10, min_rad0=1.56,
+    max_rad0=15.6, no_rad0=10, min_thetat=pi/18, max_thetat=5pi/6, no_thetat=10, min_step=0,
     max_step=10e10, size_step=10, tolerance=1e-6, iter_max=10000, no_of_roots=5, wrn=false)
 
     l = linspace(min_lambda, max_lambda, no_lambda)
@@ -144,12 +145,12 @@ function freqTab(atype::Beam; min_lambda=10, max_lambda=150, no_lambda=10, min_r
 
     detfunc(om) = detrmt(atype, om)
     rootfunc(f::Function) = find_all_roots(f, step_size=size_step, start=min_step, finish=max_step,
-                                           tol=tolerance, max_iter=iter_max, root_num_max = no_of_roots, 
+                                           tol=tolerance, max_iter=iter_max, root_num_max = no_of_roots,
                                            wrn=wrn)
     result = zeros(no_lambda, no_rad0, no_thetat, no_of_roots)
     n = length(l) * length(r) * length(p) * length(rootfunc(detfunc))
     pr = Progress(n, 1)
-    
+
     for (i, lam) in enumerate(l)
         atype.lam = lam
         for (j, rad0) in enumerate(r)
