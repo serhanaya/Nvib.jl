@@ -85,8 +85,8 @@ function find_all_roots(f::Function; step_size=0.5, start=0, finish=10e10, tol=1
   return roots
 end  # end of function find_all_roots.
 
-""" freqTab(atype::Beam; min_lambda=10, max_lambda=150, no_lambda=10, min_rad0=0.2,
-    max_rad0=2, no_rad0=10, min_thetat=pi/18, max_thetat=5pi/6, no_thetat=10, min_step=0,
+""" freqTab(atype::Beam; min_lambda=10, max_lambda=150, no_lambda=10, min_rad0=1.56,
+    max_rad0=15.6, no_rad0=10, min_thetat=pi/18, max_thetat=5pi/6, no_thetat=10, min_step=0,
     max_step=10e10, size_step=10, tolerance=1e-6, iter_max=10000, no_of_roots=5, wrn=false)
 
 A parametric approach for root finding. Use find_all_roots method and return
