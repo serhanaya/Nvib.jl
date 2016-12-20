@@ -5,8 +5,7 @@ Julia source code for the chapter titled “Nonlocal continuum modeling of nanos
 
 __Example__
 
-This function is created for a parametric analysis in mind, however we can calculate nondimensional
-frequencies for specific conditions:
+The main function is the `freqTab`. This function is created for a parametric analysis in mind: The effects of slenderness ratio (Λ), opening angle of the beam (θT), and small-scale (R0/γ) can be investigated. We can calculate nondimensional frequencies for specific conditions as the example given here:
 
 If we want to determine the nondimensional frequency for the first and second mode of a nonlocal
 beam (in-plane vibration analysis) having slenderness ratio of Λ=150, opening angle θT=120 and small
