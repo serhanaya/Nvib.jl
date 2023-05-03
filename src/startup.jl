@@ -9,9 +9,9 @@ include("fundamental_matrix.jl")
 include("detrmt.jl")
 
 
-using ProgressMeter
 
-export IPBeam, OPBeam, freqTab
+
+
 
 
 using Pkg
@@ -19,5 +19,6 @@ Pkg.activate(joinpath(homedir(), ".julia/environments/v1.7"))
 Pkg.add("ProgressMeter")
 end
 using ProgressMeter
+export IPBeam, OPBeam, freqTab
 
 end 
